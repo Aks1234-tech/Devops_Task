@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: your-dockerhub-username/urbanflow-backend:latest
+        image: pankajg3432c/devops_task-backend:latest
         ports:
           - containerPort: 8000
         env:
