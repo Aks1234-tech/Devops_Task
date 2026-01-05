@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: urbanflow-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: your-dockerhub-username/urbanflow-backend:latest
+        ports:
+          - containerPort: 8000
+        env:
+          - name: DB_HOST
+            value: mysql
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_NAME
+            value: urbanflow
+          - name: DB_USER
+            value: urban
+          - name: DB_PASSWORD
+            value: urban123
