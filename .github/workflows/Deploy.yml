@@ -1,4 +1,4 @@
-name: Urban Flow CI/CD Pipeline
+name: Urban Flow CI/CD (Self-Hosted)
 
 on:
   push:
@@ -7,40 +7,26 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to Ubuntu VM via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          script: |
-            set -e
+      - name: Deploy Backend
+        run: |
+          cd backend
+          source venv/bin/activate
+          pip install -r requirements.txt
+          sudo systemctl restart urbanflow-api
 
-            echo "🔄 Pulling latest code"
-            cd ${{ secrets.VM_PATH }}
-            git pull origin main
+      - name: Build & Deploy Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
 
-            echo "🐍 Updating Backend"
-            cd backend
-            source venv/bin/activate
-            pip install -r requirements.txt
-            sudo systemctl restart urbanflow-api
-
-            echo "⚛️ Building Frontend"
-            cd ../frontend
-            npm install
-            npm run build
-
-            echo "🚀 Deploying Frontend to Apache"
-            sudo rm -rf /var/www/html/*
-            sudo cp -r build/* /var/www/html/
-            sudo chown -R www-data:www-data /var/www/html
-            sudo systemctl restart apache2
-
-            echo "✅ Deployment completed successfully"
+          sudo rm -rf /var/www/html/*
+          sudo cp -r build/* /var/www/html/
+          sudo chown -R www-data:www-data /var/www/html
+          sudo systemctl restart apache2
