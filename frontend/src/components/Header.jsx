@@ -3,7 +3,7 @@ import "../dashboard.css";
 const Header = () => {
   return (
     <div className="header">
-      <h1>🚦 Urban Flow Traffic Dashboard</h1>
+      <h1>🚦 Urban Flow Traffic Dashboard of Udaipur</h1>
       <p>Smart City Traffic Monitoring Platform</p>
     </div>
   );
